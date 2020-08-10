@@ -32,3 +32,75 @@ Every 30 seconds, `node-dns` will check your local pod and the nodes it is deplo
 - `CF_API_TOKEN` - set to your Cloudflare API token
 - `TYPE` - set to `outside` if you wish to use your \$HOME/.kube/config rather than cluster RBAC (else you can leave it)
 - `NAMESPACE` - the namespace to look for pods in (default: `metrics`)
+
+# Kubernetes: deployment example
+
+```yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: metrics
+  name: node-dns
+  labels:
+    app: node-dns
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-dns
+  template:
+    metadata:
+      labels:
+        app: node-dns
+    spec:
+      serviceAccountName: node-dns
+      containers:
+        - name: node-dns
+          image: docker.pkg.github.com/tombowditch/node-dns/node-dns:latest
+          imagePullPolicy: Always
+          env:
+            - name: CF_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflare-api-token-secret
+                  key: api-token
+            - name: NAMESPACE
+              value: "metrics"
+          args: []
+```
+
+# Kubernetes: RBAC example
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: node-dns
+  namespace: metrics
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: node-dns
+  namespace: metrics
+rules:
+  - apiGroups: [""]
+    resources:
+      - nodes
+      - pods
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: node-dns
+subjects:
+  - kind: ServiceAccount
+    name: node-dns
+    namespace: metrics
+roleRef:
+  kind: ClusterRole
+  name: node-dns
+  apiGroup: rbac.authorization.k8s.io
+```
