@@ -128,6 +128,10 @@ func main() {
 					continue
 				}
 
+				if record.Name != dns.Host {
+					continue
+				}
+
 				cfIPs = append(cfIPs, record.Content)
 
 				// check if a ip is there we don't have
