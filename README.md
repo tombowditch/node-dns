@@ -31,3 +31,4 @@ Every 30 seconds, `node-dns` will check your local pod and the nodes it is deplo
 
 - `CF_API_TOKEN` - set to your Cloudflare API token
 - `TYPE` - set to `outside` if you wish to use your \$HOME/.kube/config rather than cluster RBAC (else you can leave it)
+- `NAMESPACE` - the namespace to look for pods in (default: `metrics`)

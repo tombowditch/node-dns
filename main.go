@@ -208,7 +208,12 @@ func getNeededDNS(clientset *kubernetes.Clientset, ctx context.Context) []PodDNS
 
 	fmt.Println("")
 
-	pods, err := clientset.CoreV1().Pods("metrics").List(ctx, metav1.ListOptions{})
+	namespace := os.Getenv("NAMESPACE")
+	if namespace == "" {
+		namespace = "metrics"
+	}
+
+	pods, err := clientset.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{})
 
 	for _, pod := range pods.Items {
 		appName := pod.Labels["app"]
