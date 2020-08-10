@@ -1,4 +1,4 @@
-module github.com/tombowditch/nodey
+module github.com/tombowditch/node-dns
 
 go 1.13
 
