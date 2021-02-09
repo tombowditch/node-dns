@@ -21,4 +21,6 @@ COPY --from=builder /go/bin/app /go/bin/app
 
 USER appuser
 
+LABEL org.opencontainers.image.source https://github.com/tombowditch/node-dns
+
 ENTRYPOINT ["/go/bin/app"]

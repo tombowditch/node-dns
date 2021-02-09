@@ -36,7 +36,7 @@ type PodDNS struct {
 }
 
 var (
-	dryrun = false
+	dryrun = true
 )
 
 func main() {
